@@ -1,0 +1,458 @@
+{
+  "info": {
+    "name": "SeniorInsight - Testes de API",
+    "description": "Collection de testes da API de Medicamentos usando Particionamento de Equivalência",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Testes GET",
+      "description": "Testes para endpoint GET /api/medications",
+      "item": [
+        {
+          "name": "GET - Lista Vazia (CT01)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "{{content_type}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/medications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medications"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Teste 1: Validar status code",
+                  "pm.test(\"Status code é 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Teste 2: Validar campo status",
+                  "pm.test(\"Campo 'status' existe e é 'sucesso'\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"sucesso\");",
+                  "});",
+                  "",
+                  "// Teste 3: Validar mensagem",
+                  "pm.test(\"Mensagem de sucesso\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.mensagem).to.exist;",
+                  "});",
+                  "",
+                  "// Teste 4: Validar dados é array",
+                  "pm.test(\"Campo 'dados' é um array\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.dados).to.be.an('array');",
+                  "});",
+                  "",
+                  "// Teste 5: Validar tempo de resposta",
+                  "pm.test(\"Tempo de resposta menor que 500ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "});",
+                  "",
+                  "// Teste 6: Validar headers",
+                  "pm.test(\"Headers corretos\", function () {",
+                  "    pm.response.to.have.header(\"Content-Type\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET - Lista com Medicamentos (CT02)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "{{content_type}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/medications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medications"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Teste 1: Validar status code",
+                  "pm.test(\"Status code é 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Teste 2: Validar campo status",
+                  "pm.test(\"Campo 'status' existe e é 'sucesso'\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"sucesso\");",
+                  "});",
+                  "",
+                  "// Teste 3: Validar campo mensagem",
+                  "pm.test(\"Mensagem de sucesso\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.mensagem).to.eql(\"Medicamentos recuperados com sucesso\");",
+                  "});",
+                  "",
+                  "// Teste 4: Validar dados é array",
+                  "pm.test(\"Campo 'dados' é um array\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.dados).to.be.an('array');",
+                  "});",
+                  "",
+                  "// Teste 5: Validar medicamentos possuem estrutura correta",
+                  "pm.test(\"Medicamentos possuem estrutura correta\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.dados.length).to.be.greaterThan(0);",
+                  "    json.dados.forEach(function (med) {",
+                  "        pm.expect(med).to.have.property('idMedicamento');",
+                  "        pm.expect(med).to.have.property('nome');",
+                  "        pm.expect(med).to.have.property('dosagem');",
+                  "        pm.expect(med).to.have.property('horario');",
+                  "    });",
+                  "});",
+                  "",
+                  "// Teste 6: Validar tipo dos campos",
+                  "pm.test(\"Tipos dos campos estão corretos\", function () {",
+                  "    var json = pm.response.json();",
+                  "    json.dados.forEach(function (med) {",
+                  "        pm.expect(med.nome).to.be.a('string');",
+                  "        pm.expect(med.dosagem).to.be.a('string');",
+                  "        pm.expect(med.horario).to.match(/^\\d{2}:\\d{2}$/);",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Testes POST",
+      "description": "Testes para endpoint POST /api/medications",
+      "item": [
+        {
+          "name": "POST - Sucesso (CT04)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "{{content_type}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\\n  \"nome\": \"Dipirona\",\\n  \"dosagem\": \"500mg\",\\n  \"horario\": \"12:00\"\\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/medications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medications"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Teste 1: Validar status code",
+                  "pm.test(\"Status code é 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "// Teste 2: Validar estrutura de resposta",
+                  "pm.test(\"Estrutura de resposta correta\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('status');",
+                  "    pm.expect(json).to.have.property('mensagem');",
+                  "    pm.expect(json).to.have.property('dados');",
+                  "});",
+                  "",
+                  "// Teste 3: Validar mensagem de sucesso",
+                  "pm.test(\"Mensagem de sucesso\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"sucesso\");",
+                  "    pm.expect(json.mensagem).to.eql(\"Medicamento criado com sucesso\");",
+                  "});",
+                  "",
+                  "// Teste 4: Validar dados retornados",
+                  "pm.test(\"Dados do medicamento estão corretos\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.dados.nome).to.eql(\"Dipirona\");",
+                  "    pm.expect(json.dados.dosagem).to.eql(\"500mg\");",
+                  "    pm.expect(json.dados.horario).to.eql(\"12:00\");",
+                  "});",
+                  "",
+                  "// Teste 5: Validar ID gerado",
+                  "pm.test(\"ID do medicamento foi gerado\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.dados.idMedicamento).to.exist;",
+                  "    pm.expect(json.dados.idMedicamento).to.not.be.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST - Nome Vazio (CT05)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "{{content_type}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\\n  \"nome\": \"\",\\n  \"dosagem\": \"500mg\",\\n  \"horario\": \"12:00\"\\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/medications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medications"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Mensagem de erro para nome vazio\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.mensagem).to.eql(\"Nome do medicamento é obrigatório\");",
+                  "});",
+                  "",
+                  "pm.test(\"Código de erro correto\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.codigoErro).to.eql(\"NOME_OBRIGATORIO\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST - Dosagem Inválida (CT06)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "{{content_type}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\\n  \"nome\": \"Amoxicilina\",\\n  \"dosagem\": \"invalid\",\\n  \"horario\": \"08:00\"\\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/medications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medications"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Mensagem de erro para dosagem inválida\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.mensagem).to.eql(\"Dosagem em formato inválido\");",
+                  "});",
+                  "",
+                  "pm.test(\"Código de erro correto\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.codigoErro).to.eql(\"DOSAGEM_INVALIDA\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST - Horário Inválido (CT07)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "{{content_type}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\\n  \"nome\": \"Losartana\",\\n  \"dosagem\": \"50mg\",\\n  \"horario\": \"25:75\"\\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/medications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medications"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Mensagem de erro para horário inválido\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.mensagem).to.eql(\"Horário deve estar no formato HH:MM\");",
+                  "});",
+                  "",
+                  "pm.test(\"Código de erro correto\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.codigoErro).to.eql(\"HORARIO_INVALIDO\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST - Medicamento Duplicado (CT08)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "{{content_type}}",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\\n  \"nome\": \"Paracetamol\",\\n  \"dosagem\": \"500mg\",\\n  \"horario\": \"08:00\"\\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/medications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "medications"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 409\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test(\"Mensagem de erro para duplicado\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.mensagem).to.include(\"já foi registrado\");",
+                  "});",
+                  "",
+                  "pm.test(\"Código de erro correto\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.codigoErro).to.eql(\"MEDICAMENTO_DUPLICADO\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": "seu_token_jwt_aqui"
+    },
+    {
+      "key": "content_type",
+      "value": "application/json"
+    }
+  ]
+}
