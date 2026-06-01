@@ -7,6 +7,22 @@
 
 ---
 
+## 📍 Informações do Projeto
+
+**Projeto em Grupo (Repositório Real):**
+```
+https://github.com/luandeferreira/SeniorInsight
+```
+
+**Wiki do Projeto:**
+```
+https://github.com/luandeferreira/SeniorInsight/wiki
+```
+
+**Contribuidor:** [@PedroPSLago](https://github.com/PedroPSLago)
+
+---
+
 ## 📑 Índice
 
 1. [Visão Geral](#visão-geral)
@@ -905,7 +921,16 @@ A API está **pronta para produção** conforme os requisitos especificados.
 
 ---
 
+## 📌 Próximos Passos
+
+1. **Copiar este documento** para a Wiki do projeto em grupo: https://github.com/luandeferreira/SeniorInsight/wiki
+2. **Executar os testes** no Postman conforme descrito
+3. **Documentar resultados** de execução real da API
+
+---
+
 **Documento Assinado por:** Pedro Lago  
+**GitHub:** [@PedroPSLago](https://github.com/PedroPSLago)  
 **Data de Conclusão:** 01/06/2026  
 **Versão:** 1.0  
 **Status Final:** ✅ Documentado, Testado e Aprovado
